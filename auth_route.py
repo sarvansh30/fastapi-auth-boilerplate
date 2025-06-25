@@ -3,7 +3,7 @@ from user_model import User, LoginReq, createUser
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
 from fastapi.responses import JSONResponse
-from jose import jwt
+from jose import JWTError, jwt
 from dotenv import load_dotenv
 from datetime import datetime, timedelta,timezone
 load_dotenv()
@@ -78,3 +78,19 @@ def signup(userInfo:createUser):
     raise HTTPException(status_code=status.HTTP_201_CREATED, detail="User created successfully")
 
 
+@auth_route.post('/logout')
+def logout_user(token:str = Body(...)):
+    
+    try:
+        payload = jwt.decode(token,secret_key,algorithms=algorithm)
+        username = payload.get("user")
+        if username in userDB:
+            userDB.get(username).active_session = False
+            return JSONResponse(
+                status_code=200,
+                content={"message": "Logout successful"}
+            )
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
