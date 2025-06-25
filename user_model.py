@@ -5,8 +5,13 @@ class User(BaseModel):
     username:str
     password:str
     email:EmailStr
-    # active_session:Optional[bool] = False
-    
+    active_session:bool = False
+
+class createUser(BaseModel):
+    username:str
+    password:str
+    email:EmailStr
+
 class updateUser(BaseModel):
     username:Optional[str]
     password:Optional[str]
