@@ -18,6 +18,7 @@ auth_route = APIRouter()
 userDB={}
 pwd_context = CryptContext(schemes=["bcrypt"],deprecated="auto")
 
+
 def create_token(username:str,exp:int):
 
     try:
@@ -94,3 +95,4 @@ def logout_user(token:str = Body(...)):
             raise HTTPException(status_code=404, detail="User not found")
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+    
