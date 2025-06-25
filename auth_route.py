@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body,Request
 from user_model import User, LoginReq, createUser
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
@@ -80,8 +80,15 @@ def signup(userInfo:createUser):
 
 
 @auth_route.post('/logout')
-def logout_user(token:str = Body(...)):
-    
+def logout_user(request:Request):
+    payload = request.headers.get("Authorization")
+    if not payload or not payload.startswith("Bearer "):
+        return JSONResponse(
+            status_code=401,
+            content={"detail": "No authorisation token"}
+        )
+    token = payload[len("Bearer "):]
+
     try:
         payload = jwt.decode(token,secret_key,algorithms=algorithm)
         username = payload.get("user")
