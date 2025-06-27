@@ -13,7 +13,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         if request.url.path.startswith("/protected"):
             auth = request.headers.get("Authorization")
-            print(auth)
+            # print(auth)
 
             if not auth or not auth.startswith("Bearer "):
                 return JSONResponse(
